@@ -17,7 +17,10 @@
           width: 50%;
           text-align: center;
           margin-top: 30px;
-          border: 3px solid #00A6FF;
+          border: 3px solid #333;
+        }
+        .th_col {
+            padding: 10px;
         }
     </style>
 
@@ -49,19 +52,23 @@
                         <input type="submit" class="btn btn-outline-primary" name="submit" value="Add Catagory">
                     </form>
                 </div>
-                <table class="table table-hover center">
-                  <tr>
-                    <td>Catagory Name</td>
-                    <td>Action</td>
-                  </tr>
-
-                  @foreach($data as $data)
-                  <tr>
-                    <td>{{$data->catagory_name}}</td>
-                    <td><a onclick="return confirm('Are You Sure To Delete.')" class="btn btn-danger" href="{{url('delete_catagory',$data->id)}}">Delete</a></td>
-                  </tr>
-                  @endforeach
-
+                <table class="table-bordered center">
+                  <thead class="table-dark">
+                    <tr>
+                      <td class="th_col">Catagory Name</td>
+                      <td class="th_col">Action</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($data as $data)
+                    <tr>
+                      <td>{{$data->catagory_name}}</td>
+                      <td>
+                        <a onclick="return confirm('Are You Sure To Delete.')" class="btn btn-danger" href="{{url('delete_catagory',$data->id)}}">Delete</a>
+                      </td>
+                    </tr>
+                    @endforeach
+                  </tbody>
                 </table>
           </div>
       </div>
