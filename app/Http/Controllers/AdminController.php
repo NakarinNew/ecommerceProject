@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Catagory;
 use App\Models\Product;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -35,15 +36,6 @@ class AdminController extends Controller
     }
 
     public function add_product(Request $request){
-        $product = new product;
-        
-        $product->title=$request->title;
-        $product->description=$request->description;
-        $product->price=$request->price;
-        $product->quantity=$request->quantity;
-        $product->discount_price=$request->dis_price;
-        
-        $product->catagory=$request->catagory;
 
         // การเข้ารหัสรูปภาพ
         $image = $request->file('image');
@@ -56,10 +48,20 @@ class AdminController extends Controller
         // อัพโหลดและบันทึกรูปภาพ
         $upload_location = 'product/image/';
         $full_path = $upload_location.$img_name;
-        $image->move($upload_location,$img_name);
-        $product->image=$full_path;
 
-        $product->save();
+        product::insert([
+            'title'=>$request->title,
+            'description'=>$request->description,
+            'price'=>$request->price,
+            'quantity'=>$request->quantity,
+            'discount_price'=>$request->discount_price,
+            'catagory'=>$request->catagory,
+            'image'=>$full_path,
+            'created_at'=>Carbon::now('GMT+7')
+
+        ]);
+
+        $image->move($upload_location,$img_name);
         return redirect()->back()->with('message','Product Added Successfully');
 
     }
@@ -84,5 +86,51 @@ class AdminController extends Controller
         $product = product::find($id);
         $catagory = catagory::all();
         return view('admin.update_product',compact('product','catagory'));
+    }
+
+    public function update_confirm_product(Request $request , $id) {
+        // การเข้ารหัสรูปภาพ
+        $image = $request->file('image');
+        if($image) {
+            // เปลี่ยนชื่อภาพใหม่
+            $name_gen = hexdec(uniqid());
+            // ดึงนามสกุลไฟล์ภาพ
+            $img_ext = strtolower($image->getClientOriginalExtension());
+            // ไฟล์ภาพที่ต้องการ
+            $img_name = $name_gen.'.'.$img_ext;
+            // อัพโหลดและบันทึกรูปภาพ
+            $upload_location = 'product/image/';
+            $full_path = $upload_location.$img_name;
+
+            // อัพเดคภาพ
+            product::find($id)->update([
+                'title'=>$request->title,
+                'description'=>$request->description,
+                'price'=>$request->price,
+                'quantity'=>$request->quantity,
+                'discount_price'=>$request->discount_price,
+                'catagory'=>$request->catagory,
+                'image'=>$full_path,
+                'updated_at'=>Carbon::now('GMT+7')
+            ]);
+
+            // ลบเก่าและลบภาพใหม่
+            $old_image = $request->old_image;
+            unlink($old_image);
+            $image->move($upload_location,$img_name);
+            return redirect()->back()->with('message','Product Updated Successfully');
+
+        } else {
+            product::find($id)->update([
+                'title'=>$request->title,
+                'description'=>$request->description,
+                'price'=>$request->price,
+                'quantity'=>$request->quantity,
+                'discount_price'=>$request->discount_price,
+                'catagory'=>$request->catagory,
+                'updated_at'=>Carbon::now('GMT+7')
+            ]);
+            return redirect()->back()->with('message','Product Updated Successfully');
+        }
     }
 }

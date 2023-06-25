@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminController;
 // });
 
 Route::get('/', [HomeController::class,'index']);
+Route::get('/redirect', [HomeController::class,'redirect']);
 
 Route::middleware([
     'auth:sanctum',
@@ -31,8 +32,15 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/redirect', [HomeController::class,'redirect']);
+// ไม่จำเป็นต้อง Login
+Route::get('/product_details/{id}', [HomeController::class,'product_details']);
 
+// จำเป็นต้อง Login เพื่อใช้งาน
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function (){
 // Catagory
 Route::get('/view_catagory', [AdminController::class,'view_catagory']);
 Route::post('/add_catagory', [AdminController::class,'add_catagory']);
@@ -46,5 +54,8 @@ Route::get('/delete_product/{id}', [AdminController::class,'delete_product']);
 Route::get('/update_product/{id}', [AdminController::class,'update_product']);
 Route::post('/update_confirm_product/{id}', [AdminController::class,'update_confirm_product']);
 
-
+Route::post('/add_cart/{id}', [HomeController::class,'add_cart']);
+Route::get('/show_cart', [HomeController::class,'show_cart']);
+Route::get('/remove_cart/{id}', [HomeController::class,'remove_cart']);
+});
 

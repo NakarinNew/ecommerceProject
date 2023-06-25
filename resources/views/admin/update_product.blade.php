@@ -73,7 +73,7 @@
                         </div>
                         <div class="dis_design">
                             <label>Discount Price : </label>
-                            <input type="number" name="dis_price" placeholder="Write a Discount Price is a apply" value="{{$product->discount_price}}">
+                            <input type="number" name="discount_price" placeholder="Write a Discount Price is a apply" value="{{$product->discount_price}}">
                         </div>
                         <div class="dis_design">
                             <label>Product Quantity : </label>
@@ -90,7 +90,7 @@
                         </div>
                         <div class="dis_design">    
                             <label>Change Product Image : </label>
-                            <input type="file" name="image" required="" value="{{$product->image}}">
+                            <input type="file" name="image" value="{{$product->image}}">
                         </div>
                         <input type="hidden" name="old_image" value="{{$product->image}}">
                         <div class="dis_design">    
