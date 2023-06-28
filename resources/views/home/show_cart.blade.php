@@ -58,6 +58,13 @@
          <!-- header section strats -->
          @include('home.header');
          <!-- end header section -->
+         
+                @if(session()->has('message'))
+                  <div class="alert alert-success">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+                      {{session()->get('message')}}
+                  </div>
+                @endif
       
             <table class="table-bordered center">
                     <thead class="table-dark">
@@ -85,8 +92,11 @@
                     <?php $totalprice=$totalprice + $row->price ?>
                     @endforeach
             </table>
-            <div>
-                <h1 class="total_deg">Total Price : ฿{{$totalprice}}</h1>
+            <div class="total_deg">
+                <h1>Total Price : ฿{{$totalprice}}</h1>
+                <br >
+                <a href="{{url('cash_order')}}" class="btn btn-danger">Cash On Deilvery</a>
+                <a href="" class="btn btn-danger">Pay Using Card</a>
             </div>
 
       <!-- footer start -->

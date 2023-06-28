@@ -110,8 +110,7 @@ class AdminController extends Controller
                 'quantity'=>$request->quantity,
                 'discount_price'=>$request->discount_price,
                 'catagory'=>$request->catagory,
-                'image'=>$full_path,
-                'updated_at'=>Carbon::now('GMT+7')
+                'image'=>$full_path
             ]);
 
             // ลบเก่าและลบภาพใหม่
@@ -127,8 +126,7 @@ class AdminController extends Controller
                 'price'=>$request->price,
                 'quantity'=>$request->quantity,
                 'discount_price'=>$request->discount_price,
-                'catagory'=>$request->catagory,
-                'updated_at'=>Carbon::now('GMT+7')
+                'catagory'=>$request->catagory
             ]);
             return redirect()->back()->with('message','Product Updated Successfully');
         }

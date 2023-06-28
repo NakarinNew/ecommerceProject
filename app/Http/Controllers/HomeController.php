@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\Order;
 
 
 class HomeController extends Controller
@@ -76,6 +77,37 @@ class HomeController extends Controller
         $cart = cart::find($id);
         $cart->delete();
         return redirect()->back();
+    }
+
+    public function cash_order() {
+        $user = Auth::user();
+        $user_id = $user->id;
+        
+        $data = cart::where('user_id','=',$user_id)->get();
+        foreach($data as $row) {
+            order::insert([
+                'name'=>$row->name,
+                'email'=>$row->email,
+                'phone'=>$row->phone,
+                'address'=>$row->address,
+                'user_id'=>$row->user_id,
+    
+                'product_title'=>$row->product_title,
+                'price'=>$row->price,
+                'quantity'=>$row->quantity,
+                'image'=>$row->image,
+                'product_id'=>$row->product_id,
+
+                'payment_status'=>'cash on deilvery',
+                'deilvery_status'=>'processing',
+     
+                'created_at'=>Carbon::now('GMT+7')
+            ]);
+            $cart_id = $row->id;
+            $cart = cart::find($cart_id);
+            $cart->delete();
+        }
+        return redirect()->back()->with('message','We have Received Your Order. We will connect with you soon.');
     }
 
 }
