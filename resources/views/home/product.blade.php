@@ -44,13 +44,13 @@
                               <h6 style="text-decoration:line-through; color:blue">
                                  Price
                                  <br>
-                                 ฿{{$row->price}}
+                                 ${{$row->price}}
                               </h6>
                            @else
                               <h6 style="color:blue;">
                                  Price
                                  <br>
-                                 ฿{{$row->price}}
+                                 ${{$row->price}}
                               </h6>
                            @endif
                      </div>

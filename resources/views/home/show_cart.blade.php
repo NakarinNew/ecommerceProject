@@ -60,7 +60,7 @@
          <!-- end header section -->
          
                 @if(session()->has('message'))
-                  <div class="alert alert-success">
+                  <div class="alert alert-success center">
                       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
                       {{session()->get('message')}}
                   </div>
@@ -82,7 +82,7 @@
                         <tr>
                             <td>{{$row->product_title}}</td>
                             <td>{{$row->quantity}}</td>
-                            <td>฿{{$row->price}}</td>
+                            <td>${{$row->price}}</td>
                             <td>
                                 <img class="img_set" src="{{asset($row->image)}}">
                             </td>
@@ -93,10 +93,14 @@
                     @endforeach
             </table>
             <div class="total_deg">
-                <h1>Total Price : ฿{{$totalprice}}</h1>
+                <h1>Total Price : ${{$totalprice}}</h1>
                 <br >
+                @if($totalprice != 0)
                 <a href="{{url('cash_order')}}" class="btn btn-danger">Cash On Deilvery</a>
-                <a href="" class="btn btn-danger">Pay Using Card</a>
+                <a href="{{url('stripe',$totalprice)}}" class="btn btn-danger">Pay Using Card</a>
+                @else
+                <h3>There are no products in the cart.</h3>
+                @endif
             </div>
 
       <!-- footer start -->

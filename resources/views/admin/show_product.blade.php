@@ -48,6 +48,7 @@
 
              <h2 class="h2_font">Add Product</h2>
 
+             <div class="table-responsive">
                 <table class="table-bordered center">
                     <thead class="table-dark">
                         <tr>
@@ -84,7 +85,7 @@
                         @endforeach
                     </tbody>
                 </table>
-
+            </div>
           </div>
       </div>
       <!-- container-scroller -->

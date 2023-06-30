@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Models\Order;
+use Session;
+use Stripe;
 
 
 class HomeController extends Controller
@@ -108,6 +110,52 @@ class HomeController extends Controller
             $cart->delete();
         }
         return redirect()->back()->with('message','We have Received Your Order. We will connect with you soon.');
+    }
+
+    public function stripe($totalprice) {
+        return view('home.stripe',compact('totalprice'));
+    }
+
+    public function stripePost(Request $request,$totalprice) {
+        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe\Charge::create ([
+                "amount" => $totalprice * 100,
+                "currency" => "usd",
+                "source" => $request->stripeToken,
+                "description" => "Thank for Payment (Test payment.)" 
+        ]);
+      
+        $user = Auth::user();
+        $user_id = $user->id;
+        
+        $data = cart::where('user_id','=',$user_id)->get();
+        foreach($data as $row) {
+            order::insert([
+                'name'=>$row->name,
+                'email'=>$row->email,
+                'phone'=>$row->phone,
+                'address'=>$row->address,
+                'user_id'=>$row->user_id,
+    
+                'product_title'=>$row->product_title,
+                'price'=>$row->price,
+                'quantity'=>$row->quantity,
+                'image'=>$row->image,
+                'product_id'=>$row->product_id,
+
+                'payment_status'=>'Paid',
+                'deilvery_status'=>'processing',
+     
+                'created_at'=>Carbon::now('GMT+7')
+            ]);
+            $cart_id = $row->id;
+            $cart = cart::find($cart_id);
+            $cart->delete();
+        }
+
+        Session::flash('success', 'Payment successful!');
+              
+        return back();
     }
 
 }

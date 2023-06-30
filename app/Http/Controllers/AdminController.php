@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use PDF;
 
 use App\Models\Catagory;
 use App\Models\Product;
-use Carbon\Carbon;
+use App\Models\Order;
 
 class AdminController extends Controller
 {
@@ -130,5 +132,24 @@ class AdminController extends Controller
             ]);
             return redirect()->back()->with('message','Product Updated Successfully');
         }
+    }
+
+    public function order() {
+        $order = order::all();
+        return view('admin.order',compact('order'));
+    }
+
+    public function delivered($id) {
+        order::find($id)->update([
+            'payment_status'=>'Paid',
+            'deilvery_status'=>'delivered'
+        ]);
+        return redirect()->back();
+    }
+
+    public function print_pdf($id) {
+        $order = order::find($id);
+        $pdf = PDF::loadView('admin.pdf',compact('order'));
+        return $pdf->download('order_details.pdf');
     }
 }

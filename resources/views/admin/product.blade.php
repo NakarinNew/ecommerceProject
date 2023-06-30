@@ -10,7 +10,7 @@
         }
         .h2_font {
             font-size: 40px;
-            padding-bottom: 40px;
+            padding-bottom: 10px;
         }
         .center {
           margin: auto;
