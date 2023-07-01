@@ -49,7 +49,8 @@
                         @csrf
 
                         <input type="text" name="catagory" placeholder="Catagory Name">
-                        <input type="submit" class="btn btn-outline-dark" name="submit" value="Add Catagory">
+                        <br><br>
+                        <input type="submit" class="btn btn-outline-primary" name="submit" value="Add Catagory">
                     </form>
                 </div>
                 <table class="table-bordered center">

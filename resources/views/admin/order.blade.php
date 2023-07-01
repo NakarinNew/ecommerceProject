@@ -37,7 +37,15 @@
           <div class="content-wrapper">
             
                 <h2 class="h2_font">All Order</h2>
-               
+
+                <div>
+                  <form action="{{url('search')}}" method="get">
+                    @csrf
+                    <input type="text" name="search" placeholder="Search For Something">
+                    <input type="submit" value="Search" class="btn btn-outline-primary">
+                  </form>
+                </div>
+          
                 <div class="table-responsive">
                       <table class="table-bordered center">
                         <thead class="table-dark">
@@ -54,10 +62,11 @@
                             <th>Image</th>
                             <th>Delivered</th>
                             <th>Print PDF</th>
+                            <th>Send Email</th>
                           </tr>
                         </thead>
                         <tbody>
-                        @foreach($order as $row)
+                        @forelse($order as $row)
                           <tr>
                             <td>{{$row->name}}</td>
                             <td>{{$row->email}}</td>
@@ -73,16 +82,25 @@
                             </td>
                             <td>
                               @if($row->deilvery_status=='processing')
-                              <a class="btn btn-primary" onclick="return confirm('Are you sure this product is delivered ?')" href="{{url('delivered',$row->id)}}">Delivered</a>
+                              <a class="btn btn-dark" onclick="return confirm('Are you sure this product is delivered ?')" href="{{url('delivered',$row->id)}}">Delivered</a>
                               @else
-                              <h3 style="color: #00E503;">Delivered</h3>
+                              <h3 style="color: #01A6BA;">Delivered</h3>
                               @endif
                             </td>
                             <td>
                               <a class="btn btn-secondary" href="{{url('print_pdf',$row->id)}}">Print</a>
                             </td>
+                            <td>
+                              <a href="{{url('send_email',$row->id)}}" class="btn btn-info">Send</a>
+                            </td>
                           </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                          <td colspan="16">
+                            No Data Found.
+                          </td>
+                        </tr>
+                        @endforelse
                         </tbody>
                       </table>
                 </div>
