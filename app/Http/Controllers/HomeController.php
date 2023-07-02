@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\Comment;
+use App\Models\Reply;
 use App\Models\Order;
 use Session;
 use Stripe;
@@ -19,7 +21,9 @@ class HomeController extends Controller
 
     public function index() {
         $product = product::paginate(10);
-        return view('home.userpage',compact('product'));
+        $comment = comment::orderby('id','desc')->get();
+        $reply = reply::all();
+        return view('home.userpage',compact('product','comment','reply'));
     }
 
     public function redirect() {
@@ -35,10 +39,14 @@ class HomeController extends Controller
             foreach($order as $row) {
                 $total_revenue = $total_revenue+$row->price;
             }
-            return view('admin.home',compact('total_product','total_order','total_user','total_revenue'));
+            $total_delivered = order::where('deilvery_status','=','delivered')->get()->count();
+            $total_processing = order::where('deilvery_status','=','processing')->get()->count();
+            return view('admin.home',compact('total_product','total_order','total_user','total_revenue','total_delivered','total_processing'));
         } else {
             $product = product::paginate(10);
-            return view('home.userpage',compact('product'));
+            $comment = comment::orderby('id','desc')->get();
+            $reply = reply::all();
+            return view('home.userpage',compact('product','comment','reply'));
         }
 
     }
@@ -165,6 +173,44 @@ class HomeController extends Controller
         Session::flash('success', 'Payment successful!');
               
         return back();
+    }
+
+    public function show_order() {
+        $user = Auth::user();
+        $user_id = $user->id;
+        $order = order::where('user_id','=',$user_id)->get();
+
+        return view('home.order',compact('order'));
+    }
+
+    public function cancel_order($id) {
+        order::find($id)->update([
+            'deilvery_status'=>'You canceled the order'
+        ]);
+        return redirect()->back();
+    }
+
+    public function add_comment(Request $request) {
+        $user = Auth::user();
+        comment::insert([
+            'name'=>$user->name,
+            'user_id'=>$user->id,
+            'comment'=>$request->comment,
+            'created_at'=>Carbon::now('GMT+7')
+        ]);
+        return redirect()->back();
+    }
+
+    public function add_reply(Request $request) {
+        $user = Auth::user();
+        reply::insert([
+            'name'=>$user->name,
+            'user_id'=>$user->id,
+            'comment_id'=>$request->commentId,
+            'reply'=>$request->reply,
+            'created_at'=>Carbon::now('GMT+7')
+        ]);
+        return redirect()->back();
     }
 
 }
